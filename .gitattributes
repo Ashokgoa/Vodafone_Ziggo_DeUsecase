@@ -1,0 +1,5 @@
+# Normalize line endings so every contributor's checkout gets consistent
+# text files regardless of their OS, and Git stops warning about LF/CRLF
+# conversion on every commit (as it has throughout this project's history
+# on Windows).
+* text=auto eol=lf

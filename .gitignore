@@ -1,0 +1,34 @@
+# Virtual environments
+.venv/
+venv/
+
+# Python bytecode / build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Test / tooling caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Secrets
+.env
+
+# Local data (scraped pages, vector-store files)
+data/
+vectorstore/
+*.faiss
+*.sqlite3
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

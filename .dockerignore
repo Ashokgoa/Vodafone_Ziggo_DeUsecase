@@ -1,0 +1,20 @@
+# Local virtual environment and caches -- never needed inside the image,
+# and .venv/ alone would otherwise bloat the build context by hundreds of MB.
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local data (scraped pages, vector-store files) -- the container builds
+# its own inside a Docker volume; the host's copy should never be baked in.
+data/
+
+# Secrets: never enter the build context, let alone the image.
+.env
+
+# Not needed to run the API -- kept out of the image, not just unused.
+tests/
+scripts/
+.git/
+.vscode/
+.idea/

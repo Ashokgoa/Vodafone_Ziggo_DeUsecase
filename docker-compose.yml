@@ -1,0 +1,32 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    # Loads every KEY=VALUE line from your local .env directly into the
+    # container's environment -- the same file used for local (non-Docker)
+    # development. The .env file itself never enters the image (see
+    # .dockerignore); Compose only reads it from the host at startup.
+    env_file:
+      - .env
+    volumes:
+      # Persists the vector store across container restarts, so ingestion
+      # (scrape + embed, the slow part) only runs once -- see the
+      # empty-store check in app/api/main.py's lifespan. The path here
+      # must match VECTOR_STORE_DIR (default: data/vectorstore, relative
+      # to the image's /app WORKDIR) -- if you override that env var,
+      # update this path to match.
+      - vectorstore-data:/app/data/vectorstore
+    healthcheck:
+      # No curl/wget in the slim base image; Python's stdlib urllib needs
+      # no extra install. start_period is generous because the very first
+      # startup also downloads the embedding model and scrapes/embeds the
+      # page, which can take a couple of minutes.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+volumes:
+  vectorstore-data:

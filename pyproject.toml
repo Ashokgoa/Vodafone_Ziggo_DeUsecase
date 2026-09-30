@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ziggo-rag-assistant"
+version = "0.1.0"
+description = "Customer-facing RAG assistant over Ziggo web content, with a LangGraph agentic backend."
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+# Scraping, embedding, vector-store and LLM libraries will be chosen
+# deliberately in later steps and added here as each one is needed.
+dependencies = [
+    "python-dotenv>=1.0",  # loads .env into the environment for local development
+    "requests>=2.31",  # HTTP client used to fetch the Ziggo page
+    "beautifulsoup4>=4.12",  # parses HTML so we can extract the visible text
+    "langchain-text-splitters>=0.3",  # splits cleaned text into overlapping chunks
+    "sentence-transformers>=3.0",  # local, free embedding model (runs offline, no API key)
+    "chromadb>=0.5",  # local, embedded vector store (persists to a folder, no server)
+    "langgraph>=0.2",  # the agentic workflow: retrieve -> confidence branch -> answer
+    "anthropic>=0.40",  # calls the LLM (Claude Haiku) that writes the customer-facing answer
+    "fastapi>=0.115",  # exposes the assistant as an HTTP API (POST /ask)
+    "uvicorn>=0.30",  # ASGI server that actually runs the FastAPI app
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",  # only needed for FastAPI's TestClient in tests
+]
+
+# src/ layout: prevents tests from accidentally importing the package from the
+# repo root instead of the installed (editable) package.
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
